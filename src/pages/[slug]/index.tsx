@@ -55,7 +55,7 @@ const Item = observer(() => {
             {`New Rez ${item?.name ?? ''} Reviews`}
           </h1>
           <Image
-            src={getImage(item?.imageUrl)}
+            src={getImage(item?.getTopRated().imageUrl)}
             width={300}
             height={300}
             alt=''

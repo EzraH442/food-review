@@ -10,6 +10,7 @@ const Review = types
     comment: '',
     helpfulVotes: 0,
     downvotes: 0,
+    imageUrl: '',
   })
   .actions((self) => ({
     addHelpful() {

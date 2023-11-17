@@ -5,12 +5,14 @@ const makeReview = async (data: {
   review: string;
   title: string;
   itemId: string;
+  imageUrl: string | undefined;
 }): Promise<Review> => {
   const reviewData = {
     score: data.score + '',
     comment: data.review,
     title: data.title,
     itemId: data.itemId,
+    imageUrl: data.imageUrl ?? '',
   };
 
   return await fetch('/api/review/create', {

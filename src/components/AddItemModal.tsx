@@ -87,6 +87,10 @@ interface IAddItemModal {
   onClose: VoidFunction;
 }
 
+export const isValidMimeType = (type: string) => {
+  return type === 'image/png' || type === 'image/jpeg';
+};
+
 const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
   const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
@@ -129,8 +133,8 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     if (fileId) {
       imageUrl = `https://static.ezrahuang.com/file/new-res-meal-review/${fileId}`;
     }
-    const _item = await makeItem({ ...rest, tags, imageUrl });
-    const review = await makeReview({ ...data, itemId: _item.id });
+    const _item = await makeItem({ ...rest, tags });
+    const review = await makeReview({ ...data, itemId: _item.id, imageUrl });
     const item = await getItem(_item.id); // necessary because this will have the correct score
 
     store.addItem(item);
@@ -146,6 +150,13 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
       form.setError('fileId', { message: 'No file selected' });
       return;
       // set error
+    }
+
+    if (!isValidMimeType(file.type)) {
+      form.setError('fileId', {
+        message: 'Invalid file type: only png and jpegs are accepted',
+      });
+      return;
     }
 
     const res = await upload(file);

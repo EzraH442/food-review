@@ -10,7 +10,6 @@ const Item = types
     updatedAt: new Date(),
     name: '',
     rating: 0.0,
-    imageUrl: '',
     reviews: ReviewArray,
     tags: types.array(types.string),
     diningHall: '',
@@ -30,6 +29,22 @@ const Item = types
         return found;
       });
       return hasATag;
+    },
+    getTopRated() {
+      let topRated = self.reviews.reviews[0];
+
+      self.reviews.reviews.forEach((r) => {
+        if (
+          r.helpfulVotes > topRated.helpfulVotes ||
+          (r.helpfulVotes === topRated.helpfulVotes &&
+            !topRated.imageUrl &&
+            !!r.imageUrl)
+        ) {
+          topRated = r;
+        }
+      });
+
+      return topRated;
     },
   }))
   .actions((self) => ({

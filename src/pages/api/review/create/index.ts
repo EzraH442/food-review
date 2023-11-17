@@ -3,13 +3,14 @@ import { NextApiHandler } from 'next';
 
 // api request to create a review
 const handle: NextApiHandler = async (req, res) => {
-  const { score, comment, title, itemId } = req.body;
+  const { score, comment, title, itemId, imageUrl } = req.body;
   const result = await prisma.review.create({
     data: {
       title,
       rating: parseInt(score),
       comment,
       itemId,
+      imageUrl,
     },
   });
 

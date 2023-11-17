@@ -1,6 +1,6 @@
 'use client'; //Form needs use client
 
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -30,10 +30,9 @@ import { Input } from './ui/input';
 import StarRating from './StarRating';
 import { store } from '@/lib/types';
 import { makeReview } from '@/lib/review/make-review';
+import useImageUpload from '@/hooks/useImageUpload';
+import { isValidMimeType } from './AddItemModal';
 // import { toast } from "@/components/ui/use-toast"
-
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const FormSchema = z.object({
   review: z
@@ -44,24 +43,20 @@ const FormSchema = z.object({
     .max(160, {
       message: 'Review must not be longer than 160 characters.',
     })
-    .default(""),
+    .default(''),
   title: z
     .string()
     .min(0, {
       message: 'Review title must be at least 1 character long',
     })
     .max(30, { message: 'Review title must not be longer than 30 characters' })
-    .default(""),
+    .default(''),
   score: z
     .number()
     .min(1, { message: 'min is 1' })
     .max(10, { message: 'max is 10' })
     .default(0),
-  image: z
-    // .instanceof(File)
-    .any()
-    // .default(new File([], ""))
-    .optional(),
+  fileId: z.string().optional(),
 });
 
 interface IReviewButtonProps {
@@ -81,10 +76,14 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
     resolver: zodResolver(FormSchema),
   });
 
+  const { upload, pending, error } = useImageUpload();
+
   const reset = () => {
     form.setValue('score', 0);
     form.setValue('review', '');
     form.setValue('title', '');
+    form.setValue('fileId', '');
+    form.clearErrors();
   };
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
@@ -98,7 +97,13 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
     //   ),
     // });
 
-    makeReview({ ...data, itemId })
+    const { fileId, ...rest } = data;
+    let imageUrl;
+    if (fileId) {
+      imageUrl = `https://static.ezrahuang.com/file/new-res-meal-review/${fileId}`;
+    }
+
+    makeReview({ ...rest, itemId, imageUrl })
       .then((review) => {
         const item = store.findItemById(itemId);
         if (item) {
@@ -114,6 +119,38 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
   const onCancel = () => {
     reset();
     onClose();
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    form.clearErrors('fileId');
+    let file = e.target.files?.item(0);
+
+    if (!file) {
+      form.setError('fileId', { message: 'No file selected' });
+      return;
+      // set error
+    }
+
+    if (!isValidMimeType(file.type)) {
+      form.setError('fileId', {
+        message: 'Invalid file type: only png and jpegs are accepted',
+      });
+      return;
+    }
+
+    const res = await upload(file);
+
+    console.log(error);
+    if (error) {
+      form.setError('fileId', {
+        message: `An error occured when uploading file: ${error}`,
+      });
+
+      return;
+    }
+
+    console.log('set id', res);
+    form.setValue('fileId', res);
   };
 
   return (
@@ -176,18 +213,16 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
             />
             <FormField
               control={form.control}
-              name='image'
+              name='fileId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <Input
-                    id="image"
-                    type="file"
+                    type='file'
                     className=''
-                    accept=".png,.jpeg,.jpg"
+                    accept='.png,.jpeg,.jpg'
                     multiple={false}
-                    {...field}
-                  // onChange={handleChange}
+                    onChange={handleFileChange}
                   />
                   <FormMessage />
                 </FormItem>

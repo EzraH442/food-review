@@ -10,9 +10,7 @@ import {
   CardFooter,
 } from './ui/card';
 import Image from 'next/image';
-import { Badge } from "@/components/ui/badge"
-
-
+import { Badge } from '@/components/ui/badge';
 
 import Link from 'next/link';
 import { observer } from 'mobx-react-lite';
@@ -33,7 +31,7 @@ const ItemCard: React.FC<IItemCardProps> = observer(
         <Link href={`/${item.slug}`} className='group' key={item.id}>
           <CardContent className='bg-muted flex items-center justify-center h-64'>
             <div className='relative w-full h-full'>
-              <Image src={getImage(item.imageUrl)} fill alt='' />
+              <Image src={getImage(item.getTopRated().imageUrl)} fill alt='' />
             </div>
           </CardContent>
           <CardHeader className='flex flex-row justify-between'>
@@ -74,22 +72,23 @@ const ItemCard: React.FC<IItemCardProps> = observer(
         </CardContent>
         <CardFooter className='flex flex-col justify-between items-start h-32'>
           <div className='flex flex-wrap items-center overflow-y-hidden gap-2'>
-            <Badge variant="default">
+            <Badge variant='default'>
               {diningHalls.halls.get(item.diningHall)?.name}
             </Badge>
             {item.tags.map((tagId) => {
               return (
-                <Badge
-                  variant="outline"
-                  key={tagId}
-                >
+                <Badge variant='outline' key={tagId}>
                   {tags.tags.get(tagId)?.value}
                 </Badge>
               );
             })}
           </div>
 
-          <Button className='' variant={'secondary'} onClick={() => onReviewClick(item.id)}>
+          <Button
+            className=''
+            variant={'secondary'}
+            onClick={() => onReviewClick(item.id)}
+          >
             <PlusIcon className='w-4 h-4 mr-2' /> Review
           </Button>
         </CardFooter>

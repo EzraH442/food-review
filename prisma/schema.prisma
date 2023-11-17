@@ -16,7 +16,6 @@ model Item {
   updatedAt    DateTime    @updatedAt()
   name         String
   rating       Float       @default(0)
-  imageUrl     String
   reviews      Review[]
   tags         TagOnItem[]
   slug         String      @unique
@@ -35,6 +34,7 @@ model Review {
   itemId       String
   helpfulVotes Int      @default(0)
   downvotes    Int      @default(0)
+  imageUrl     String
 }
 
 model Tag {
