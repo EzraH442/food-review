@@ -58,9 +58,10 @@ SECRET_KEY="<random bytes>"
 
 You can then access the page by going to /admin?password=\<the password you generated\>
 
+Finally, for image upload support, ask ezra for lines to add in your env file
+
 Planned features (in decreasing order of importance):
 
-- image support
 - item search
 - email notifications for specific meals
 - multiple dining hall support
