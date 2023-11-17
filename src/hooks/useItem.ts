@@ -12,7 +12,6 @@ const emptyItem: UseItemsItem = {
   updatedAt: new Date(),
   name: '',
   rating: 0,
-  imageUrl: '',
   slug: '',
   verified: false,
   diningHallId: '',
