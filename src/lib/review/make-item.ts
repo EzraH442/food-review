@@ -4,10 +4,15 @@ const makeItem = async (data: {
   name: string;
   diningHall: string;
   tags: string[];
+  imageUrl: string | undefined;
 }): Promise<Item> => {
-  const { name, diningHall, tags } = data;
+  const { name, diningHall, tags, imageUrl } = data;
   const body = { name, diningHall };
   const params = new URLSearchParams(body);
+
+  if (imageUrl) {
+    params.append('imageUrl', imageUrl);
+  }
 
   tags.forEach((t) => {
     params.append('tags', t);

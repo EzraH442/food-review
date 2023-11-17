@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -34,10 +34,16 @@ import { makeReview } from '@/lib/review/make-review';
 import { getItem } from '@/lib/review/get-item';
 import DiningHallSelect from './DiningHallSelect';
 import TagsCheckbox from './TagsCheckbox';
+import useImageUpload from '@/hooks/useImageUpload';
+import Spinner from './Spinner';
 // import { toast } from "@/components/ui/use-toast"
 
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
 
 const FormSchema = z.object({
   name: z
@@ -56,14 +62,14 @@ const FormSchema = z.object({
     .max(160, {
       message: 'Review must not be longer than 160 characters.',
     })
-    .default(""),
+    .default(''),
   title: z
     .string()
     .min(0, {
       message: 'Review title must be at least 1 character long',
     })
     .max(30, { message: 'Review title must not be longer than 30 characters' })
-    .default(""),
+    .default(''),
   score: z
     .number()
     .min(1, { message: 'min is 1' })
@@ -71,11 +77,7 @@ const FormSchema = z.object({
     .default(0),
   diningHall: z.string(),
   tags: z.record(z.string().optional(), z.boolean().optional()),
-  image: z
-    // .instanceof(File)
-    .any()
-    // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-    .optional(),
+  fileId: z.string().optional(),
 });
 
 type IFormData = z.infer<typeof FormSchema>;
@@ -90,12 +92,16 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     resolver: zodResolver(FormSchema),
   });
 
+  const { upload, pending, error } = useImageUpload();
+
   const reset = () => {
     form.setValue('score', 0);
     form.setValue('name', '');
     form.setValue('review', '');
     form.setValue('title', '');
     form.setValue('diningHall', '');
+    form.setValue('fileId', '');
+    form.clearErrors();
     //reset the tags
   };
 
@@ -114,18 +120,47 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     //   ),
     // });
 
-    const { tags: _tags, ...rest } = data;
+    const { tags: _tags, fileId, ...rest } = data;
     const tags = Object.entries(_tags)
       .filter(([id, checked]) => !!checked)
       .map(([id, checked]) => id);
 
-    const _item = await makeItem({ ...rest, tags });
+    let imageUrl;
+    if (fileId) {
+      imageUrl = `https://static.ezrahuang.com/file/new-res-meal-review/${fileId}`;
+    }
+    const _item = await makeItem({ ...rest, tags, imageUrl });
     const review = await makeReview({ ...data, itemId: _item.id });
     const item = await getItem(_item.id); // necessary because this will have the correct score
 
     store.addItem(item);
     reset();
     onClose();
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    form.clearErrors('fileId');
+    let file = e.target.files?.item(0);
+
+    if (!file) {
+      form.setError('fileId', { message: 'No file selected' });
+      return;
+      // set error
+    }
+
+    const res = await upload(file);
+
+    console.log(error);
+    if (error) {
+      form.setError('fileId', {
+        message: `An error occured when uploading file: ${error}`,
+      });
+
+      return;
+    }
+
+    console.log('set id', res);
+    form.setValue('fileId', res);
   };
 
   return (
@@ -216,25 +251,33 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
             />
             <FormField
               control={form.control}
-              name='image'
+              name='fileId'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
-                  <Input id="image" type="file" accept=".png,.jpeg,.jpg" className='' {...field} />
+                  <Input
+                    type='file'
+                    accept='.png,.jpeg,.jpg'
+                    className=''
+                    multiple={false}
+                    onChange={handleFileChange}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            ></FormField>
             <DialogFooter>
               <div className='flex justify-between w-full'>
                 <Button onClick={() => onCancel()}>Cancel</Button>
-                <Button type='submit'>Submit</Button>
+                <Button type='submit' disabled={pending}>
+                  {pending ? <Spinner /> : 'Submit'}
+                </Button>
               </div>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
-    </Dialog >
+    </Dialog>
   );
 };
 
