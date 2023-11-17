@@ -17,9 +17,7 @@ ARG AWS_SECRET_ACCESS_KEY
 
 ARG DATABASE_URL="postgres://postgres:${DATABASE_PASSWORD}@${DB_HOST}:5432/reviews?schema=public"
 
-RUN npx -y prisma db push
 RUN npx -y prisma generate
-RUN npx -y prisma db seed
 
 RUN DATABASE_URL=${DATABASE_URL} SECRET_KEY="${SECRET_KEY}" pnpm run build
 
