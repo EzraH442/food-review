@@ -32,6 +32,7 @@ import { store } from '@/lib/types';
 import { makeReview } from '@/lib/review/make-review';
 import useImageUpload from '@/hooks/useImageUpload';
 import { isValidMimeType } from './AddItemModal';
+import Spinner from './Spinner';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
@@ -231,7 +232,9 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
             <DialogFooter>
               <div className='flex justify-between w-full'>
                 <Button onClick={() => onCancel()}>Cancel</Button>
-                <Button type='submit'>Submit</Button>
+                <Button type='submit' disabled={pending}>
+                  {pending ? <Spinner /> : 'Submit'}
+                </Button>
               </div>
             </DialogFooter>
           </form>

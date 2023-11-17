@@ -19,17 +19,20 @@ const useImageUpload = () => {
         method: 'post',
         body: formData,
       }).then((res) => res.json());
-      const fileId: string = data['fileId'];
-      const error: string = data['error'];
+      const fileId = data['fileId'];
+      const error = data['error'] ?? '';
 
       if (error === 'invalid-filetype') {
         setError('Invalid filetype');
+      } else if (error === 'unknown') {
+        setError('An unexpected error occured');
       }
 
       setPending(false);
       return fileId;
     } catch (e) {
       console.log(e);
+      setError('An unexpected error occured');
       setPending(false);
       return '';
     }

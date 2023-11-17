@@ -96,7 +96,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     resolver: zodResolver(FormSchema),
   });
 
-  const { upload, pending, error } = useImageUpload();
+  const { upload, pending, error: imageUploadError } = useImageUpload();
 
   const reset = () => {
     form.setValue('score', 0);
@@ -149,7 +149,6 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     if (!file) {
       form.setError('fileId', { message: 'No file selected' });
       return;
-      // set error
     }
 
     if (!isValidMimeType(file.type)) {
@@ -161,10 +160,10 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
 
     const res = await upload(file);
 
-    console.log(error);
-    if (error) {
+    console.log(imageUploadError);
+    if (imageUploadError) {
       form.setError('fileId', {
-        message: `An error occured when uploading file: ${error}`,
+        message: `An error occured when uploading file: ${imageUploadError}`,
       });
 
       return;

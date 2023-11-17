@@ -83,7 +83,7 @@ const POST: NextApiHandler = async (req, res) => {
 
     pipeline.on('error', (e) => {
       console.log(e);
-      return res.json({ error: 'unknown' });
+      return res.json({ fileId: '', error: 'unknown' });
     });
   };
 
