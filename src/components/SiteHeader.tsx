@@ -88,16 +88,12 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
 
   return (
     <header>
-      <div className='flex flex-col lg:flex-row w-screen justify-center items-center py-2 bg-red-500'>
-        {/* <div className='flex flex-row items-center'> */}
-        {/* <MainNav /> */}
-        <div className='flex items-center' style={{ position: 'absolute', left: '15px' }}> {/* Container for logo */}
-          <img src='foodreview_logo.png' alt='Logo' className='w-12 h-12' /> {/* Adjust width and height as needed */}
-        </div>
-        <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center whitespace-nonwrap'>
+      <div className='flex flex-col lg:flex-row w-screen max-w-7xl justify-between items-center py-4 bg-background border-0 border-b-2 border-muted mt-2'>
+        <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center whitespace-nonwrap flex flex-row'>
+          <img src='foodreview_logo.png' alt='Logo' className='w-12 h-12 mr-3 hidden lg:block' /> {/* Adjust width and height as needed */}
           {'McGill Food Reviews'}
         </h1>
-               
+
         <div className='flex items-center space-x-3'>
           <Dialog open={filterModalOpen} modal>
             <Toaster />
@@ -153,26 +149,26 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
                 <PlusIcon className='w-4 h-4 mr-2' /> Item
               </Button>
             </div>
-            <div className='flex flex-row gap-3'>
+            {/* <div className='flex flex-row gap-3'>
               <Input
                 placeholder='Search...'
                 className='w-64 px-3'
               />
               <Button>Search</Button>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* </div> */}
         {/* <div className='w-96 relative '>
                     <Input />
                 </div> */}
-    
+
       </div>
       <AddItemModal
         open={addItemModalOpen}
         onClose={() => setAddItemModalOpen(false)}
       />
-      
+
     </header>
   );
 });
