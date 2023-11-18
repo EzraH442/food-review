@@ -88,12 +88,16 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
 
   return (
     <header>
-      <div className='flex flex-col gap-2 lg:flex-row w-screen max-w-5xl justify-between py-2 '>
+      <div className='flex flex-col lg:flex-row w-screen justify-center items-center py-2 bg-red-500'>
         {/* <div className='flex flex-row items-center'> */}
         {/* <MainNav /> */}
-        <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
+        <div className='flex items-center' style={{ position: 'absolute', left: '15px' }}> {/* Container for logo */}
+          <img src='foodreview_logo.png' alt='Logo' className='w-12 h-12' /> {/* Adjust width and height as needed */}
+        </div>
+        <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center whitespace-nonwrap'>
           {'McGill Food Reviews'}
         </h1>
+               
         <div className='flex items-center space-x-3'>
           <Dialog open={filterModalOpen} modal>
             <Toaster />
@@ -162,11 +166,13 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
         {/* <div className='w-96 relative '>
                     <Input />
                 </div> */}
+    
       </div>
       <AddItemModal
         open={addItemModalOpen}
         onClose={() => setAddItemModalOpen(false)}
       />
+      
     </header>
   );
 });
