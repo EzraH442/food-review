@@ -30,7 +30,7 @@ const Home = observer(() => {
   };
 
   return (
-    <div className='flex flex-col items-center gap-y-4 mx-12 md:mx-48'>
+    <div className='flex flex-col items-center gap-y-4 mx-3 md:mx-48'>
       <SiteHeader />
       <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
         {getTitle()}

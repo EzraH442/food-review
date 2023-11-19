@@ -31,7 +31,7 @@ const ItemCard: React.FC<IItemCardProps> = observer(
         <Link href={`/${item.slug}`} className='group' key={item.id}>
           <CardContent className='bg-muted flex items-center justify-center h-64'>
             <div className='relative w-full h-full'>
-              <Image src={getImage(item.getTopRated().imageUrl)} fill alt='' />
+              <Image src={getImage(item.getTopRated().imageUrl)} fill alt='' className='aspect-auto object-cover' />
             </div>
           </CardContent>
           <CardHeader className='flex flex-row justify-between'>
