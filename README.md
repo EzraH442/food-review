@@ -65,3 +65,9 @@ Planned features (in decreasing order of importance):
 - item search
 - email notifications for specific meals
 - multiple dining hall support
+- Spam protection
+- Form resetting for tags in item creation
+- When star button is clicked make it so it works on zod formatting to not show red anymore
+- Stop form verificatoin from happening onCancel
+- Make it so show unverified only applies when filters are submitted instead of when the toggle is clicked
+- RESET FILTERS ON RELOAD

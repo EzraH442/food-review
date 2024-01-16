@@ -33,6 +33,7 @@ import { makeReview } from '@/lib/review/make-review';
 import useImageUpload from '@/hooks/useImageUpload';
 import { isValidMimeType } from './AddItemModal';
 import Spinner from './Spinner';
+import { IItem } from '@/lib/types/Item';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
@@ -61,7 +62,7 @@ const FormSchema = z.object({
 });
 
 interface IReviewButtonProps {
-  itemId: string;
+  item: IItem;
   open: boolean;
   onClose: VoidFunction;
 }
@@ -69,7 +70,7 @@ interface IReviewButtonProps {
 type IFormData = z.infer<typeof FormSchema>;
 
 const ReviewModal: React.FC<IReviewButtonProps> = ({
-  itemId,
+  item,
   open,
   onClose,
 }) => {
@@ -104,6 +105,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
       imageUrl = `https://static.ezrahuang.com/file/new-res-meal-review/${fileId}`;
     }
 
+    let itemId = item.id;
     makeReview({ ...rest, itemId, imageUrl })
       .then((review) => {
         const item = store.findItemById(itemId);
@@ -159,7 +161,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
       <Toaster />
       <DialogContent className='overflow-y-scroll max-w-sm md:max-w-l lg:max-w-xl max-h-[36rem]'>
         <DialogHeader>
-          <DialogTitle>Add a Review</DialogTitle>
+          <DialogTitle>Add a Review for {item.name}</DialogTitle>
           <DialogDescription>
             {"Add a review of the dish. Click submit when you're done."}
           </DialogDescription>

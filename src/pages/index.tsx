@@ -7,15 +7,16 @@ import ItemCard from '@/components/ItemCard';
 import { useState } from 'react';
 import ReviewModal from '@/components/ReviewModal';
 import SiteHeader from '@/components/SiteHeader';
+import { IItem } from '@/lib/types/Item';
 
 const Home = observer(() => {
   const { items, itemsInitialized, diningHalls, settings } = store;
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
-  const [reviewItemId, setReviewItemId] = useState('');
+  const [reviewItem, setReviewItem] = useState({} as IItem);
 
-  const onItemReviewClick = (itemId: string) => {
-    setReviewItemId(itemId);
+  const onItemReviewClick = (item: IItem) => {
+    setReviewItem(item);
     setReviewModalOpen(true);
   };
 
@@ -55,7 +56,7 @@ const Home = observer(() => {
                 <div className='h-[32rem]' key={i.id}>
                   <ItemCard
                     item={i}
-                    onReviewClick={(itemId) => onItemReviewClick(itemId)}
+                    onReviewClick={(item) => onItemReviewClick(item)}
                   />
                 </div>
               ))}
@@ -65,7 +66,7 @@ const Home = observer(() => {
       <ReviewModal
         open={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
-        itemId={reviewItemId}
+        item={reviewItem}
       />
     </div>
   );

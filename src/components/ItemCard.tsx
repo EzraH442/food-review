@@ -20,7 +20,7 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import { store } from '@/lib/types';
 interface IItemCardProps {
   item: IItem;
-  onReviewClick: (itemId: string) => void;
+  onReviewClick: (item: IItem) => void;
 }
 
 const ItemCard: React.FC<IItemCardProps> = observer(
@@ -87,7 +87,7 @@ const ItemCard: React.FC<IItemCardProps> = observer(
           <Button
             className=''
             variant={'secondary'}
-            onClick={() => onReviewClick(item.id)}
+            onClick={() => onReviewClick(item)}
           >
             <PlusIcon className='w-4 h-4 mr-2' /> Review
           </Button>
